@@ -1,0 +1,28 @@
+# File: .github/workflows/template-sync.yml
+on:
+  # cronjob trigger
+  schedule:
+    - cron: "0 0 1 * *"
+  # manual trigger
+  workflow_dispatch:
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    # https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: actions-template-sync
+        uses: AndreasAugustin/actions-template-sync@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_repo_path: KaspersTools/PluginTemplate
+          upstream_branch: main
+          pr_labels: "template-sync"
